@@ -1,0 +1,188 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Roberto Metere <roberto@metere.it>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-13 23:46+0200\n"
+"PO-Revision-Date: 2014-10-13 23:56+0200\n"
+"Last-Translator: Roberto Metere <roberto@metere.it>\n"
+"Language-Team: Roberto Metere <roberto@metere.it>\n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Some editor\n"
+
+#: SimpleWEPCracker.pyw:76 SimpleWEPCracker.pyw:210 SimpleWEPCracker.pyw:219
+msgid "Find network..."
+msgstr "Cerca rete..."
+
+#: SimpleWEPCracker.pyw:77
+msgid "Aircrack directory..."
+msgstr "Directory di Aircrack..."
+
+#: SimpleWEPCracker.pyw:79
+msgid "Solve conflicts"
+msgstr "Risolvi conflitti"
+
+#: SimpleWEPCracker.pyw:80
+msgid "Start monitor..."
+msgstr "Avvia monitor..."
+
+#: SimpleWEPCracker.pyw:81
+msgid "Test monitor"
+msgstr "Testa monitor"
+
+#: SimpleWEPCracker.pyw:82
+msgid "Remove monitors"
+msgstr "Elimina i monitor"
+
+#: SimpleWEPCracker.pyw:84
+msgid "Gain data"
+msgstr "Rileva dati wireless"
+
+#: SimpleWEPCracker.pyw:85
+msgid "Fake authentication"
+msgstr "Autenticazione fasulla"
+
+#: SimpleWEPCracker.pyw:86
+msgid "ARP Replay"
+msgstr "Riproduzione pacchetti ARP"
+
+#: SimpleWEPCracker.pyw:87
+msgid "Crack!!"
+msgstr "Crack!!"
+
+#: SimpleWEPCracker.pyw:89
+msgid "Credits"
+msgstr "Crediti"
+
+#: SimpleWEPCracker.pyw:90
+msgid "Exit"
+msgstr "Esci"
+
+#: SimpleWEPCracker.pyw:118
+msgid ""
+"Simple WEP Crack. Error. Insufficient privileges: restart this program from "
+"a user with more privileges (root/Administrator)"
+msgstr ""
+"Simple WEP Crack. Errore. Privilegi insufficienti: riavvia il programma da un "
+"utente con privilegi maggiori (root/Administrator)"
+
+#: SimpleWEPCracker.pyw:166
+msgid ""
+"Proceeding with closing, all currently active processes will be terminated. "
+"Would you want to quit program anyway?"
+msgstr ""
+"Procendendo con la chiusura, tutti i processi attualmente in esecuzione "
+"verranno terminati. Vuoi chiudere il programma comunque?"
+
+#: SimpleWEPCracker.pyw:201
+msgid "Choose a WEP network"
+msgstr "Scegli una rete WEP"
+
+#: SimpleWEPCracker.pyw:201
+msgid "WEP networks found: "
+msgstr "Reti WEP trovate: "
+
+#: SimpleWEPCracker.pyw:204
+msgid "Network: "
+msgstr "Rete: "
+
+#: SimpleWEPCracker.pyw:217
+msgid "No WEP-protected network found. Try again."
+msgstr "Nessuna rete con protezione WEP rilevata. Riprova."
+
+#: SimpleWEPCracker.pyw:228
+msgid ""
+"aircrack-ng directories are currently:\n"
+"\n"
+"\t"
+msgstr ""
+"Le directory di aircrack-ng sono attualmente:\n"
+"\n"
+"\t"
+
+#: SimpleWEPCracker.pyw:228
+msgid ""
+"\n"
+"\n"
+"Do you need to change them?"
+msgstr ""
+"\n"
+"\n"
+"Vuoi modificarle?"
+
+#: SimpleWEPCracker.pyw:230
+msgid "Choose \"aircrack-ng\" directory"
+msgstr "Scegli la directory di \"aircrack-ng\""
+
+#: SimpleWEPCracker.pyw:234
+msgid "Choose \"airmon-ng\", \"airodump-ng\" and \"aireplay-ng\" directory"
+msgstr ""
+"Scegli la directory per \"airmon-ng\", \"airodump-ng\" and \"aireplay-ng\""
+
+#: SimpleWEPCracker.pyw:242
+msgid "Choose a monitor device"
+msgstr "Scegli un dispositivo monitor"
+
+#: SimpleWEPCracker.pyw:242
+msgid "Available monitors: "
+msgstr "Monitor disponibili: "
+
+#: SimpleWEPCracker.pyw:261
+msgid "Monitor devices found/created:\n"
+msgstr "Dispositivi monitor trovati/creati:\n"
+
+#: SimpleWEPCracker.pyw:269
+msgid "Monitor "
+msgstr "Il monitor "
+
+#: SimpleWEPCracker.pyw:269
+msgid " works properly"
+msgstr " funziona correttamente"
+
+#: SimpleWEPCracker.pyw:271
+msgid "Injection failed, chosen monitor could not work properly"
+msgstr ""
+"Test di injection fallito, il monitor scelto potrebbe non funzionare "
+"correttamente"
+
+#: SimpleWEPCracker.pyw:285
+msgid "No monitor detected"
+msgstr "Nessun monitor trovato"
+
+#: SimpleWEPCracker.pyw:287
+msgid "Correctly closed monitors:\n"
+msgstr "Monitor correttamente chiusi:\n"
+
+#: SimpleWEPCracker.pyw:289
+msgid ""
+"\n"
+"\n"
+"Error closing those monitors:\n"
+msgstr ""
+"\n"
+"\n"
+"Errore nella chiusura dei seguenti monitor:\n"
+
+#: SimpleWEPCracker.pyw:297
+msgid "Simple WEP Cracker - Dump"
+msgstr ""
+
+#: SimpleWEPCracker.pyw:305
+msgid "Simple WEP Cracker - Fake Authentication"
+msgstr ""
+
+#: SimpleWEPCracker.pyw:312
+msgid "Simple WEP Cracker - ARP Requests replay"
+msgstr ""
+
+#: SimpleWEPCracker.pyw:318
+msgid "Simple WEP Cracker - Crack password!!"
+msgstr ""
+

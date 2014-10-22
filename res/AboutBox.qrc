@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="res">
+    <file>swepc_green_small.png</file>
+  </qresource>
+</RCC>
