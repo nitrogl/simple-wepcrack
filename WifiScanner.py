@@ -111,7 +111,7 @@ class WifiScanner(object):
 
     # Result
     self.scanResults = Set()
-    
+
     # Get all wireless devices
     try:
       fb = subprocess.check_output(["iwconfig"], shell = True, stderr=subprocess.PIPE)
@@ -146,6 +146,9 @@ class WifiScanner(object):
 	    break
 	if hwAddress == None:
 	  raise OSError("Unable to find MAC address for device " + interface)
+	
+	# Put interface up
+	fb = subprocess.check_output(["ifconfig", interface, "up"])
 	
 	# Scan!
 	fb = subprocess.check_output(["iwlist", interface, "scanning"])
@@ -247,9 +250,12 @@ class WifiScanner(object):
 	if (ap.ssid == name):
 	  return ap
     return None
+  
+# Run the application
+def main():
+  ws = WifiScanner()
+  ws.scan()
+  ws.shellPrint()
 
-# Just test in CLI
-ws = WifiScanner()
-#ws.shellPrint()
-#ws.scan()
-#ws.shellPrint()
+if __name__ == '__main__':
+    main()

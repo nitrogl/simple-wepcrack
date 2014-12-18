@@ -5,10 +5,12 @@
 #
 # Aircrack module (simple frontend)
 
-import sys, os, subprocess
+import sys, os, subprocess, time
 import re
 from abc import ABCMeta, abstractmethod
-from WifiNetwork import WifiNetwork
+from WifiNetwork import WifiNetwork # Useless import - just for testing
+
+currentTimeMillis = lambda: int(round(time.time() * 1000))
 
 class Process(object):
   __metaclass__ = ABCMeta
@@ -93,10 +95,14 @@ class AirMonitor(object):
 
   def start(self, interface, channel = None):
     cmd = [self.binary, "start", interface]
-    if channel != None:
+    if channel is not None:
       cmd = cmd + [ str(channel) ]
     
     try:
+      # Just be sure interface is down
+      subprocess.check_output(["ifconfig", interface, "down"])
+      
+      # Run start monitor command
       fb = subprocess.check_output(cmd)
 
       # Check root
@@ -107,13 +113,11 @@ class AirMonitor(object):
 	  mon = re.search('mon[0-9]', l)
 	  if mon is not None:
 	    # Due to a bug, set the channel manually (where?)
-	    if channel != None:
-	      subprocess.check_output(["ifconfig", mon.group(0), "down"])
-	      subprocess.check_output(["iwconfig", mon.group(0), "mode", "Monitor"])
-	      subprocess.check_output(["ifconfig", mon.group(0), "up"])
-	      subprocess.check_output(["iwconfig", mon.group(0), "channel", str(channel)])
+	    if channel is not None:
+	      for c in [ str((int(channel) + 1) % 11), str(channel)]:
+		subprocess.check_output(["iwconfig", interface, "channel", c])
+		subprocess.check_output(["iwconfig", mon.group(0), "channel", c])
 	    mons = mons + [mon.group(0)]
-	
 	return mons
       else:
 	raise OSError(fb.strip())
@@ -258,6 +262,7 @@ class AirOutputDump(object):
 # A 802.11 WEP / WPA-PSK key cracker
 class AirCrack(object):
   binary = None
+  retryDelay = 10 # seconds
   
   def __init__ (self, binary):
     self.setBinary(binary)
@@ -273,8 +278,10 @@ class AirCrack(object):
       if crackDir is not None:
 	if not os.path.exists(crackDir) or os.path.isfile(crackDir):
 	  print "AirCrack crack error. Unable to find dump directory."
-	  return
+	  return 2
 	else:
+	  while os.listdir(crackDir) == 0:
+	    time.sleep(self.retryDelay)
 	  cmd = cmd + [self.binary + " -b " + network.bssid + " " + crackDir + "/" + output + "*.cap"]
       else:
 	cmd = cmd + [self.binary + " -b " + network.bssid + " " + output + "*.cap"]
@@ -288,6 +295,9 @@ class AirCrack(object):
 	  if line is not None:
 	    print line.strip()
 	    sys.stdout.flush()
+      return 0 # Were running
+    else:
+      return 1 # Error
 
 
 # aircrack-ng is an 802.11 WEP and WPA/WPA2-PSK key cracking program.
@@ -310,6 +320,8 @@ class AircrackNG(object):
   replay = None
   odump = None
   cracker = None
+  timeStart = None
+  timeStop = None
   
   def __init__ (self):
     if (os.name == "posix"):
@@ -338,20 +350,37 @@ class AircrackNG(object):
     self.mon.setBinary(self.sbinDir + "/airmon-ng")
     self.replay.setBinary(self.sbinDir + "/aireplay-ng")
     self.odump.setBinary(self.sbinDir + "/airodump-ng")
+    
+  def startCrackTime(self):
+    self.timeStart = currentTimeMillis();
+    
+  def stopCrackTime(self):
+    self.timeStop = currentTimeMillis();
+    
+  def getElapsedTimeMillis(self):
+    if self.timeStop is not None and self.timeStart is not None:
+      return self.timeStop - self.timeStart
+    else:
+      return 0
 
-# Just test
-#aircrack = AircrackNG()
-#mons = aircrack.mon.start("wlan2", 6)
-#mons = ["mon0"]
+# Test module
+def test():
+  #Just test
+  aircrack = AircrackNG()
+  mons = aircrack.mon.start("wlan2", 6)
+  mons = ["mon0"]
 
-#if len(mons) > 0:
-  #network = WifiNetwork()
-  #network.setSSID("Alice-92313723")
-  #network.setBSSID("00:1C:A2:D1:55:FC")
-  #print aircrack.replay.testInjection(network, mons[0])
-  #print aircrack.odump.dump(network, mons[0])
+  if len(mons) > 0:
+    network = WifiNetwork()
+    network.setSSID("Alice-92313723")
+    network.setBSSID("00:1C:A2:D1:55:FC")
+    print aircrack.replay.testInjection(network, mons[0])
+    print aircrack.odump.dump(network, mons[0])
 
-# Stop monitors
-#for mon in mons:
-  #aircrack.mon.stop(mon)
+  #Stop monitors
+  for mon in mons:
+    aircrack.mon.stop(mon)
+
+if __name__ == '__main__':
+    test()
 

@@ -20,7 +20,7 @@
    <string>Simple WEP Crack - Aiuto</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../res/AboutBox.qrc">
+   <iconset resource="../res/AboutBox.qrc">
     <normaloff>:/res/swepc_green_small.png</normaloff>:/res/swepc_green_small.png</iconset>
   </property>
   <property name="locale">
@@ -39,7 +39,16 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetFixedSize</enum>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <property name="spacing">
@@ -95,7 +104,7 @@
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="../../res/AboutBox.qrc">:/res/swepc_green_small.png</pixmap>
+            <pixmap resource="../res/AboutBox.qrc">:/res/swepc_green_small.png</pixmap>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -118,7 +127,7 @@
            </size>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Simple WEP Crack&lt;/p&gt;&lt;p&gt;versione: &lt;span style=&quot; font-weight:600;&quot;&gt;0.1 &lt;/span&gt;&lt;br/&gt;autore: &lt;span style=&quot; font-weight:600;&quot;&gt;GULCh Cagliari &lt;/span&gt;&lt;br/&gt;data: &lt;span style=&quot; font-weight:600;&quot;&gt;25 ottobre 2014&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Copyright © 2014 Roberto Metere&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Simple WEP Crack&lt;/p&gt;&lt;p&gt;versione: &lt;span style=&quot; font-weight:600;&quot;&gt;0.2 &lt;/span&gt;&lt;br/&gt;autore: &lt;span style=&quot; font-weight:600;&quot;&gt;Roberto Metere &lt;/span&gt;&lt;br/&gt;data: &lt;span style=&quot; font-weight:600;&quot;&gt;25 ottobre 2014&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Copyright © 2014 Roberto Metere&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -147,7 +156,7 @@
            </size>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simple WEP Crack&lt;/span&gt; è un programma python d'esempio creato per il &lt;span style=&quot; font-weight:600;&quot;&gt;LinuxDay 2014&lt;/span&gt; organizzato a &lt;span style=&quot; font-weight:600;&quot;&gt;Cagliari dal GULCh&lt;/span&gt;. È sostanzialmente un'icona di sistema che lancia diversi comandi utili per testare la sicurezza delle proprie reti WEP.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Simple WEP Crack&lt;/span&gt; è sostanzialmente un'icona di sistema che lancia diversi comandi utili per testare la sicurezza delle proprie reti WEP.&lt;/p&gt;&lt;p&gt;Inoltre può essere messo in modalità automatica, previa la scelta della rete, per motivi legali.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="textFormat">
            <enum>Qt::RichText</enum>
@@ -177,6 +186,7 @@
   </layout>
  </widget>
  <resources>
+  <include location="../res/AboutBox.qrc"/>
   <include location="../../res/AboutBox.qrc"/>
  </resources>
  <connections/>

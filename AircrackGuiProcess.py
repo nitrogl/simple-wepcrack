@@ -23,9 +23,13 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
   cmdLabel = None
   output = None
   deletePreviousContent = False
-  startTrigger = None
-  stopTrigger = None
+  beginTrigger = None
+  endTrigger = None
   lineFilterRegEx = None
+  background = False
+  stopTrigger = None
+  stopCallback = None
+  stopLine = None
   
   def __init__(self, parent = None, title = "Aircrack GUI Process", icon = None):
     super(QtGui.QWidget, self).__init__(None)
@@ -58,12 +62,12 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
     event.ignore()
   
   def dataReady(self, data = None):
-    if self.startTrigger is not None:
-      reg = re.search(self.startTrigger, data)
+    if self.beginTrigger is not None:
+      reg = re.search(self.beginTrigger, data)
       if reg is not None:
 	outString = data[data.find(reg.group(0)):]
-	if self.stopTrigger is not None:
-	  reg = re.search(self.stopTrigger, outString)
+	if self.endTrigger is not None:
+	  reg = re.search(self.endTrigger, outString)
 	  if reg is not None:
 	    outString = outString[:outString.rfind(reg.group(0))]
       else:
@@ -73,7 +77,22 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
     if outString is not None:
       # Remove "noise"
       outString = re.sub('\[([0-9]+;[0-9]+)*H', '', outString)
-      outString = re.sub('\[[0-9]*[JK]', '\n', outString)
+      outString = re.sub('\[[0-9]*[JKC]', '\n', outString)
+      
+      # Stop Trigger?
+      if self.stopTrigger is not None:
+	reg = re.search(self.stopTrigger, outString)
+	if reg is not None:
+	  self.stopLine = None
+	  for l in outString.splitlines():
+	    if l.startswith(self.stopTrigger):
+	      self.stopLine = l
+	  if self.stopLine is None:
+	    print _("We got a big error here!")
+	  else:
+	    print self.stopLine
+	    self.stop()
+	    self.stopCallback()
       
       # Filter lines if needed
       if self.lineFilterRegEx is not None:
@@ -106,20 +125,28 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
     self.cmdLabel.setText(" ".join(cmd))
     #self.process.start(cmd[0], cmd[1:], QtCore.QIODevice.ReadOnly | QtCore.QIODevice.Unbuffered)
     self.process.start(cmd[0], cmd[1:], QtCore.QIODevice.ReadOnly)
-    self.show()
+    if not self.background:
+      self.show()
   
   def stop(self):
     self.process.terminate()
     self.hide()
   
+  def setBackground(self, value):
+    self.background = (value == True)
+  
   def setDeletePreviousContent(self, value):
     self.deletePreviousContent = (value == True)
   
-  def setStartTrigger(self, startTrigger):
-    self.startTrigger = startTrigger
+  def setBeginTrigger(self, beginTrigger):
+    self.beginTrigger = beginTrigger
   
-  def setStopTrigger(self, stopTrigger):
-    self.stopTrigger = stopTrigger
+  def setEndTrigger(self, endTrigger):
+    self.endTrigger = endTrigger
   
   def setLineFilterRegEx(self, lineFilterRegEx):
     self.lineFilterRegEx = lineFilterRegEx
+  
+  def setStopTrigger(self, stopTrigger, callBack = None):
+    self.stopTrigger = stopTrigger
+    self.stopCallback = callBack

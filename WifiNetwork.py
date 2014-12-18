@@ -41,3 +41,6 @@ class WifiNetwork(object):
   
   def setChannel(self, channel):
     self.channel = channel
+    
+  def isValid(self):
+    return (self.bssid == "00:00:00:00:00:00")

@@ -6,7 +6,8 @@
 # Simple WEP Crack
 
 # Imports
-import sys, os, re, sets, PyQt4
+from threading import Thread
+import sys, os, time, re, sets, PyQt4
 from PyQt4 import QtCore, QtGui, QtNetwork
 from AboutBox_rc import *
 from Ui_AboutBox import Ui_AboutBox
@@ -29,6 +30,10 @@ def isDirectoryEmpty(checkDir):
     return os.listdir(checkDir) == []
   return False
 
+def printNow(string):
+  print string,
+  sys.stdout.flush()
+
 # Simple WEP Crack
 class SimpleWEPCrack (QtGui.QApplication):
   aboutBox = None
@@ -43,6 +48,9 @@ class SimpleWEPCrack (QtGui.QApplication):
   aircrack = None
   monitorDevices = []
   processes = { "dump": None, "replay": {}, "crack": None }
+  autoMode = False
+  animIcon = None
+  animating = False
 
   # Application
   def __init__(self, arguments):
@@ -54,6 +62,13 @@ class SimpleWEPCrack (QtGui.QApplication):
     self.iconNoMon = QtGui.QIcon(QtGui.QPixmap('res/swepc_yellow.png'))
     self.iconOperative = QtGui.QIcon(QtGui.QPixmap('res/swepc_green.png'))
     self.iconBusy = QtGui.QIcon(QtGui.QPixmap('res/swepc_red.png'))
+    self.iconCrackingAnim = [
+      QtGui.QIcon(QtGui.QPixmap('res/swepc_red_0.png')),
+      QtGui.QIcon(QtGui.QPixmap('res/swepc_red_1.png')),
+      QtGui.QIcon(QtGui.QPixmap('res/swepc_red_2.png')),
+      QtGui.QIcon(QtGui.QPixmap('res/swepc_red_3.png')),
+      QtGui.QIcon(QtGui.QPixmap('res/swepc_red_4.png'))
+      ]
     
     # As first, check for permissions
     self.enoughPrivileges()
@@ -79,6 +94,7 @@ class SimpleWEPCrack (QtGui.QApplication):
     # Tray menu
     self.trayMenu = QtGui.QMenu()
     self.actions["wep"] = self.trayMenu.addAction(_("Find network..."), self.chooseNetwork)
+    self.actions["autocrack"] = self.trayMenu.addAction(_("Auto-crack..."), self.crackNetwork)
     self.actions["dir"] = self.trayMenu.addAction(_("Aircrack directory..."), self.chooseAircrackBinDirs)
     self.trayMenu.addSeparator()
     self.actions["check"] = self.trayMenu.addAction(_("Solve conflicts"), self.killConflictingPrograms)
@@ -98,19 +114,48 @@ class SimpleWEPCrack (QtGui.QApplication):
     # Set menu to tray icon and show
     self.systemTrayIcon.setContextMenu(self.trayMenu)
     self.systemTrayIcon.show()
+    
+  def setIcon(self, icon = None):
+    if icon is None:
+      self.systemTrayIcon.setIcon(self.icon)
+    else:
+      self.systemTrayIcon.setIcon(icon)
+      
+  def animateIconThread(self, iconList):
+    self.animating = True
+    i = 0;
+    while self.animating:
+      i = (i + 1) % (len(iconList))
+      self.setIcon(iconList[i])
+      time.sleep(1)
+  
+  def animateCrackingIcon(self, animate = True):
+    self.animateIcon(self.iconCrackingAnim, animate)
+    
+  def animateIcon(self, iconList = None, animate = True):
+    if self.animIcon is not None:
+      self.animating = False
+      self.animIcon.join()
+      self.animIcon = None
+    if animate and iconList is not None:
+      self.animIcon = Thread(target = self.animateIconThread, args = (iconList, ))
+      self.animIcon.start()
+    else:
+      self.animating = False
 
   def applyCommonWidgetProperties(self, widget):
     widget.setWindowIcon(self.icon)
     widget.setWindowTitle("Simple WEP Crack")
 	
   def showModalText(self, text, modal = True, buttons = QtGui.QMessageBox.Close):
-    messageBox = QtGui.QMessageBox()
-    self.applyCommonWidgetProperties(messageBox)
-    messageBox.setIcon(QtGui.QMessageBox.Information)
-    messageBox.setStandardButtons(buttons)
-    messageBox.setText(text)
-    messageBox.setModal(modal)
-    return messageBox.exec_()
+    if not self.autoMode:
+      messageBox = QtGui.QMessageBox()
+      self.applyCommonWidgetProperties(messageBox)
+      messageBox.setIcon(QtGui.QMessageBox.Information)
+      messageBox.setStandardButtons(buttons)
+      messageBox.setText(text)
+      messageBox.setModal(modal)
+      return messageBox.exec_()
 
   def enoughPrivileges(self, exitNow = True):
     try:
@@ -134,6 +179,7 @@ class SimpleWEPCrack (QtGui.QApplication):
     for k in self.processes:
       if self.processes[k] is not None:
 	self.processes[k].stop()
+    self.animateIcon(None, False)
 
   def setStatusNoNetStatus(self):
     # Disable aircrack
@@ -147,7 +193,7 @@ class SimpleWEPCrack (QtGui.QApplication):
     # Enable monitor creation
     for k in ["check", "startmon"]:
       self.actions[k].setEnabled(True)
-    self.systemTrayIcon.setIcon(self.iconNoMon)
+    self.systemTrayIcn.setIcon(self.iconNoMon)
 
   def setStatusOperative(self):
     # Enable air suite tools
@@ -157,6 +203,12 @@ class SimpleWEPCrack (QtGui.QApplication):
     for k in ["crack"]:
       self.actions[k].setEnabled(self.currentNetwork is not None and self.currentNetwork.ssid is not None and not isDirectoryEmpty(self.aircrack.workDir + "/" + self.currentNetwork.ssid))
     self.systemTrayIcon.setIcon(self.iconOperative)
+
+  def setStatusAuto(self):
+    # Disable aircrack
+    for k in ["check", "startmon", "inj", "stopmon", "dump", "fauth", "arpinj", "crack"]:
+      self.actions[k].setEnabled(False)
+    self.systemTrayIcon.setIcon(self.icon)
 
   def quitProgram(self):
     procs = []
@@ -241,6 +293,12 @@ class SimpleWEPCrack (QtGui.QApplication):
 	self.aircrack.setSbinDir(sbindir)
 
   def chooseMonitor(self):
+    if (self.autoMode):
+      if len(self.monitorDevices) > 0:
+	return self.monitorDevices[0]
+      else:
+	return None
+    
     if len(self.monitorDevices) > 1:
       dialog = QtGui.QInputDialog()
       self.applyCommonWidgetProperties(dialog)
@@ -261,20 +319,23 @@ class SimpleWEPCrack (QtGui.QApplication):
   def startMonitor(self):
     self.systemTrayIcon.setIcon(self.iconBusy)
     for res in self.wifiScanner.scanResults:
-      self.monitorDevices = self.aircrack.mon.start(res.device)
+      self.monitorDevices = self.aircrack.mon.start(res.device, self.currentNetwork.channel)
       if len(self.monitorDevices) > 0:
 	self.showModalText(_("Monitor devices found/created:\n") + "\n".join(self.monitorDevices))
       self.setStatusOperative()
 
   def testMonitor(self):
+    res = False
     self.systemTrayIcon.setIcon(self.iconBusy)
     # Injection test
     mon = self.chooseMonitor()
     if self.aircrack.replay.testInjection(self.currentNetwork, mon):
       self.showModalText(_("Monitor ") + mon + _(" works properly"))
+      res = True
     else:
       self.showModalText(_("Injection failed, chosen monitor could not work properly"))
     self.systemTrayIcon.setIcon(self.iconOperative)
+    return res
 
   def stopMonitors(self):
     self.systemTrayIcon.setIcon(self.iconBusy)
@@ -301,7 +362,9 @@ class SimpleWEPCrack (QtGui.QApplication):
     if mon is not None:
       self.processes["dump"] = AircrackGuiProcess(self, title = _("Simple WEP Crack - Dump"), icon = self.icon)
       self.processes["dump"].setDeletePreviousContent(True)
-      self.processes["dump"].setStartTrigger('CH [ ]*[0-9]+')
+      self.processes["dump"].setBeginTrigger('CH [ ]*[0-9]+')
+      self.processes["dump"].setBackground(self.autoMode)
+      self.aircrack.startCrackTime()
       self.aircrack.odump.dump(self.currentNetwork, mon, self.aircrack.workDir + "/" + self.currentNetwork.ssid, process = self.processes["dump"])
 
   def fakeauth(self):
@@ -309,6 +372,7 @@ class SimpleWEPCrack (QtGui.QApplication):
     if mon is not None:
       self.processes["replay"]["fauth"] = AircrackGuiProcess(self, title = _("Simple WEP Crack - Fake Authentication"), icon = self.icon)
       self.processes["replay"]["fauth"].setDeletePreviousContent(False)
+      self.processes["replay"]["fauth"].setBackground(self.autoMode)
       self.aircrack.replay.fakeAuthentication(self.currentNetwork, mon, process = self.processes["replay"]["fauth"])
 
   def arpReplay(self):
@@ -316,6 +380,7 @@ class SimpleWEPCrack (QtGui.QApplication):
     if mon is not None:
       self.processes["replay"]["arp"] = AircrackGuiProcess(self, title = _("Simple WEP Crack - ARP Requests replay"), icon = self.icon)
       self.processes["replay"]["arp"].setDeletePreviousContent(True)
+      self.processes["replay"]["arp"].setBackground(self.autoMode)
       self.aircrack.replay.arpInjection(self.currentNetwork, mon, process = self.processes["replay"]["arp"])
 
   def crackPassword(self):
@@ -323,14 +388,65 @@ class SimpleWEPCrack (QtGui.QApplication):
       self.processes["cracker"] = AircrackGuiProcess(self, title = _("Simple WEP Crack - Crack password!!"), icon = self.icon)
       self.processes["cracker"].setDeletePreviousContent(False)
       self.processes["cracker"].setLineFilterRegEx('Opening|Attack|Starting|Tested|Failed|KEY FOUND')
+      self.processes["cracker"].setStopTrigger('KEY FOUND', self.keyFound)
+      self.processes["cracker"].setBackground(self.autoMode)
       self.aircrack.cracker.crack(self.currentNetwork, self.aircrack.workDir + "/" + self.currentNetwork.ssid, self.aircrack.odump.output, process = self.processes["cracker"])
+
+  def crackNetwork(self):
+    self.animateCrackingIcon()
+    self.autoMode = True
+    printNow (_("Autocrack. Choosing network..."))
+    self.chooseNetwork()
+    if self.currentNetwork.isValid():
+      printNow (_(" error. Autocrack manually stopped.") + "\n")
+      self.autoMode = False
+      self.showModalText(_(" Automatic WEP crack has been manually stopped."))
+      return
+    printNow (_("done.") + "\n")
+    self.killConflictingPrograms()
+    time.sleep(5)
+    if len(self.monitorDevices) == 0:
+      printNow (_("Autocrack. Starting monitor network..."))
+      mon = self.startMonitor()
+      if len(self.monitorDevices) == 0:
+	printNow (_(" error. Autocrack has stopped.") + "\n")
+	self.autoMode = False
+	self.showModalText(_("Automatic WEP crack stopped. Unable to start a monitor device"))
+	return
+      printNow (_("done.") + "\n")
+    printNow (_("Autocrack. Testing monitor..."))
+    if not self.testMonitor():
+      printNow (_(" failed. Autocrack has stopped.") + "\n")
+      self.autoMode = False
+      self.showModalText(_("Automatic WEP crack stopped. Unable to inject properly"))
+      return
+    printNow (_("passed.") + "\n")
+    
+    # Now crack
+    printNow (_("Autocrack. Cracking, wait just a century..."))
+    self.fakeauth()
+    self.arpReplay()
+    self.dump()
+    time.sleep(5) # wait X seconds before running the cracker
+    self.crackPassword()
+    
+  def keyFound(self):
+    self.aircrack.stopCrackTime()
+    self.autoMode = False
+    self.processes["cracker"].stop()
+    self.processes["replay"]["arp"].stop()
+    self.processes["replay"]["fauth"].stop()
+    self.processes["dump"].stop()
+    elapsed = self.aircrack.getElapsedTimeMillis() / 1000.
+    self.showModalText(self.processes["cracker"].stopLine + "\n(" + _("in") + " " + str(elapsed) + " " + _("seconds)"))
+    self.animateIcon(None, False)
+    self.systemTrayIcon.setIcon(self.iconOperative)
 
 # Run the application
 def main():
   changeLanguage('it_IT')
   app = SimpleWEPCrack( sys.argv )
   sys.exit(app.exec_())
-  del app
 
 if __name__ == '__main__':
     main()
