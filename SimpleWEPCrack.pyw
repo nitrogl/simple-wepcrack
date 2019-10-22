@@ -193,7 +193,7 @@ class SimpleWEPCrack (QtGui.QApplication):
     # Enable monitor creation
     for k in ["check", "startmon"]:
       self.actions[k].setEnabled(True)
-    self.systemTrayIcn.setIcon(self.iconNoMon)
+    self.systemTrayIcon.setIcon(self.iconNoMon)
 
   def setStatusOperative(self):
     # Enable air suite tools
