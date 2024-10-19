@@ -7,7 +7,7 @@
 
 # Imports
 from threading import Thread
-import sys, os, time, re, sets, PyQt4
+import sys, os, time, re, PyQt4
 from PyQt4 import QtCore, QtGui, QtNetwork
 from AboutBox_rc import *
 from Ui_AboutBox import Ui_AboutBox
@@ -31,8 +31,7 @@ def isDirectoryEmpty(checkDir):
   return False
 
 def printNow(string):
-  print string,
-  sys.stdout.flush()
+  print(string, flush=True)
 
 # Simple WEP Crack
 class SimpleWEPCrack (QtGui.QApplication):
