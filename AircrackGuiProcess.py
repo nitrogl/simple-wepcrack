@@ -65,13 +65,13 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
     if self.beginTrigger is not None:
       reg = re.search(self.beginTrigger, data)
       if reg is not None:
-	outString = data[data.find(reg.group(0)):]
-	if self.endTrigger is not None:
-	  reg = re.search(self.endTrigger, outString)
-	  if reg is not None:
-	    outString = outString[:outString.rfind(reg.group(0))]
+        outString = data[data.find(reg.group(0)):]
+        if self.endTrigger is not None:
+          reg = re.search(self.endTrigger, outString)
+          if reg is not None:
+            outString = outString[:outString.rfind(reg.group(0))]
       else:
-	outString = None
+        outString = None
     else:
       outString = data
     if outString is not None:
@@ -81,36 +81,36 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
       
       # Stop Trigger?
       if self.stopTrigger is not None:
-	reg = re.search(self.stopTrigger, outString)
-	if reg is not None:
-	  self.stopLine = None
-	  for l in outString.splitlines():
-	    if l.startswith(self.stopTrigger):
-	      self.stopLine = l
-	  if self.stopLine is None:
-	    print _("We got a big error here!")
-	  else:
-	    print self.stopLine
-	    self.stop()
-	    self.stopCallback()
+        reg = re.search(self.stopTrigger, outString)
+        if reg is not None:
+          self.stopLine = None
+          for l in outString.splitlines():
+            if l.startswith(self.stopTrigger):
+              self.stopLine = l
+          if self.stopLine is None:
+            print _("We got a big error here!")
+          else:
+            print self.stopLine
+            self.stop()
+            self.stopCallback()
       
       # Filter lines if needed
       if self.lineFilterRegEx is not None:
-	rows = outString.splitlines()
-	outRows = []
-	for r in rows:
-	  reg = re.search(self.lineFilterRegEx, r)
-	  if reg is not None:
-	    outRows = outRows + [r]
-	outString = "\n".join(outRows)
+        rows = outString.splitlines()
+        outRows = []
+        for r in rows:
+          reg = re.search(self.lineFilterRegEx, r)
+          if reg is not None:
+            outRows = outRows + [r]
+        outString = "\n".join(outRows)
       
       if self.deletePreviousContent:
-	self.output.setText(outString)
+        self.output.setText(outString)
       else:
-	cursor = self.output.textCursor()
-	cursor.movePosition(cursor.End)
-	cursor.insertText(outString)
-	self.output.ensureCursorVisible()
+        cursor = self.output.textCursor()
+        cursor.movePosition(cursor.End)
+        cursor.insertText(outString)
+        self.output.ensureCursorVisible()
       return outString
     else:
       return ""

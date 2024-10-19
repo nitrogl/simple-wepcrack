@@ -50,7 +50,7 @@ class AirMonitor(object):
 
       # Check root
       if not self.isRunAsRoot(fb):
-	raise OSError(fb.strip())
+        raise OSError(fb.strip())
     except OSError as e:
       print "AirMonitor stop error. ", e
     return fb.strip()
@@ -63,12 +63,12 @@ class AirMonitor(object):
 
       # Check root
       if self.isRunAsRoot(fb):
-	for l in fb.splitlines():
-	  if re.search('removed', l) is not None:
-	    return True
-	return False
+        for l in fb.splitlines():
+          if re.search('removed', l) is not None:
+            return True
+        return False
       else:
-	raise OSError(fb.strip())
+        raise OSError(fb.strip())
     except OSError as e:
       print "AirMonitor stop error. ", e
       return False
@@ -79,14 +79,14 @@ class AirMonitor(object):
 
       # Check root
       if self.isRunAsRoot(fb):
-	# Get the monitor interface(s)
-	mons = []
-	for l in fb.splitlines():
-	  mon = re.search('mon[0-9]', l)
-	  if mon is not None:
-	    mons = mons + [mon.group(0)]
-	return mons
-	raise OSError(fb.strip())
+        # Get the monitor interface(s)
+        mons = []
+        for l in fb.splitlines():
+          mon = re.search('mon[0-9]', l)
+          if mon is not None:
+            mons = mons + [mon.group(0)]
+        return mons
+        raise OSError(fb.strip())
     except OSError as e:
       print "AirMonitor detect error. ", e
     except subprocess.CalledProcessError as e:
@@ -107,20 +107,20 @@ class AirMonitor(object):
 
       # Check root
       if self.isRunAsRoot(fb):
-	# Get the monitor interface(s)
-	mons = []
-	for l in fb.splitlines():
-	  mon = re.search('mon[0-9]', l)
-	  if mon is not None:
-	    # Due to a bug, set the channel manually (where?)
-	    if channel is not None:
-	      for c in [ str((int(channel) + 1) % 11), str(channel)]:
-		subprocess.check_output(["iwconfig", interface, "channel", c])
-		subprocess.check_output(["iwconfig", mon.group(0), "channel", c])
-	    mons = mons + [mon.group(0)]
-	return mons
+        # Get the monitor interface(s)
+        mons = []
+        for l in fb.splitlines():
+          mon = re.search('mon[0-9]', l)
+          if mon is not None:
+            # Due to a bug, set the channel manually (where?)
+            if channel is not None:
+              for c in [ str((int(channel) + 1) % 11), str(channel)]:
+                subprocess.check_output(["iwconfig", interface, "channel", c])
+                subprocess.check_output(["iwconfig", mon.group(0), "channel", c])
+            mons = mons + [mon.group(0)]
+        return mons
       else:
-	raise OSError(fb.strip())
+        raise OSError(fb.strip())
     except OSError as e:
       print "AirMonitor start error. ", e
     except subprocess.CalledProcessError as e:
@@ -150,9 +150,9 @@ class AirReplay(object):
       
       # Check root
       if self.isRunAsRoot(fb):
-	return 'Injection is working' in fb
+        return 'Injection is working' in fb
       else:
-	raise OSError(fb.strip())
+        raise OSError(fb.strip())
     except OSError as e:
       print "AirReplay testInjection failure. ", e
     except subprocess.CalledProcessError as e:
@@ -165,19 +165,19 @@ class AirReplay(object):
     
     try:
       if isinstance(process, Process) :
-	process.run(cmd)
+        process.run(cmd)
       else:
-	self.proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-	while self.proc.poll() is None:
-	  line = self.proc.stdout.readline()
-	  
-	  if line is not None:
-	    # Check root
-	    if not self.isRunAsRoot(fb):
-	      self.proc.terminate()
-	      raise OSError(line.strip())
-	    print line.strip()
-	    sys.stdout.flush()
+        self.proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        while self.proc.poll() is None:
+          line = self.proc.stdout.readline()
+          
+          if line is not None:
+            # Check root
+            if not self.isRunAsRoot(fb):
+              self.proc.terminate()
+              raise OSError(line.strip())
+            print line.strip()
+            sys.stdout.flush()
     except OSError as e:
       print "AirReplay fakeAuthentication failure. ", e
     except subprocess.CalledProcessError as e:
@@ -189,19 +189,19 @@ class AirReplay(object):
     
     try:
       if isinstance(process, Process) :
-	process.run(cmd)
+        process.run(cmd)
       else:
-	self.proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-	while self.proc.poll() is None:
-	  line = self.proc.stdout.readline()
-	  
-	  if line is not None:
-	    # Check root
-	    if not self.isRunAsRoot(fb):
-	      self.proc.terminate()
-	      raise OSError(line.strip())
-	    print line.strip()
-	    sys.stdout.flush()
+        self.proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        while self.proc.poll() is None:
+          line = self.proc.stdout.readline()
+          
+          if line is not None:
+            # Check root
+            if not self.isRunAsRoot(fb):
+              self.proc.terminate()
+              raise OSError(line.strip())
+            print line.strip()
+            sys.stdout.flush()
     except OSError as e:
       print "AirReplay fakeAuthentication failure. ", e
     except subprocess.CalledProcessError as e:
@@ -229,10 +229,10 @@ class AirOutputDump(object):
     # Create dump working directory
     if dumpDir is not None and not os.path.exists(dumpDir):
       try:
-	os.makedirs(dumpDir)
+        os.makedirs(dumpDir)
       except OSError as e:
-	print "AirOutputDump dump error. ", e
-	return
+        print "AirOutputDump dump error. ", e
+        return
     
     # Command
     cmd = [self.binary, "-c", str(network.channel), "--bssid", network.bssid, "-w", dumpDir + "/" + self.output, "--ignore-negative-one", interface]
@@ -240,18 +240,18 @@ class AirOutputDump(object):
     # Dump!
     try:
       if isinstance(process, Process) :
-	process.run(cmd)
+        process.run(cmd)
       else:
-	self.proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-	while self.proc.poll() is None:
-	  line = self.proc.stderr.readline()
-	  if line is not None:
-	    # Check root
-	    if not self.isRunAsRoot(fb):
-	      self.proc.terminate()
-	      raise OSError(line.strip())
-	    print line.strip()
-	    sys.stdout.flush()
+        self.proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        while self.proc.poll() is None:
+          line = self.proc.stderr.readline()
+          if line is not None:
+            # Check root
+            if not self.isRunAsRoot(fb):
+              self.proc.terminate()
+              raise OSError(line.strip())
+            print line.strip()
+            sys.stdout.flush()
     except OSError as e:
       print "AirOutputDump dump failure. ", e
     except subprocess.CalledProcessError as e:
@@ -276,25 +276,25 @@ class AirCrack(object):
       cmd = ["sh", "-c"]
       
       if crackDir is not None:
-	if not os.path.exists(crackDir) or os.path.isfile(crackDir):
-	  print "AirCrack crack error. Unable to find dump directory."
-	  return 2
-	else:
-	  while os.listdir(crackDir) == 0:
-	    time.sleep(self.retryDelay)
-	  cmd = cmd + [self.binary + " -b " + network.bssid + " " + crackDir + "/" + output + "*.cap"]
+        if not os.path.exists(crackDir) or os.path.isfile(crackDir):
+          print "AirCrack crack error. Unable to find dump directory."
+          return 2
+        else:
+          while os.listdir(crackDir) == 0:
+            time.sleep(self.retryDelay)
+          cmd = cmd + [self.binary + " -b " + network.bssid + " " + crackDir + "/" + output + "*.cap"]
       else:
-	cmd = cmd + [self.binary + " -b " + network.bssid + " " + output + "*.cap"]
+        cmd = cmd + [self.binary + " -b " + network.bssid + " " + output + "*.cap"]
       
       if isinstance(process, Process) :
-	process.run(cmd)
+        process.run(cmd)
       else:
-	self.proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-	while self.proc.poll() is None:
-	  line = self.proc.stderr.readline()
-	  if line is not None:
-	    print line.strip()
-	    sys.stdout.flush()
+        self.proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+        while self.proc.poll() is None:
+          line = self.proc.stderr.readline()
+          if line is not None:
+            print line.strip()
+            sys.stdout.flush()
       return 0 # Were running
     else:
       return 1 # Error
@@ -326,16 +326,16 @@ class AircrackNG(object):
   def __init__ (self):
     if (os.name == "posix"):
       try:
-	self.binDir = "/".join(subprocess.check_output(["which", "aircrack-ng"]).split("/")[:-1])
-	self.sbinDir = "/".join(subprocess.check_output(["which", "airmon-ng"]).split("/")[:-1])
-	self.workDir = "/tmp/swc"
-	if not os.path.exists(self.workDir):
-	  os.makedirs(self.workDir)
+        self.binDir = "/".join(subprocess.check_output(["which", "aircrack-ng"]).split("/")[:-1])
+        self.sbinDir = "/".join(subprocess.check_output(["which", "airmon-ng"]).split("/")[:-1])
+        self.workDir = "/tmp/swc"
+        if not os.path.exists(self.workDir):
+          os.makedirs(self.workDir)
       except OSError as e:
-	self.binDir = "/usr/bin"
-	self.sbinDir = "/usr/sbin"
-	self.workDir = "/tmp"
-	
+        self.binDir = "/usr/bin"
+        self.sbinDir = "/usr/sbin"
+        self.workDir = "/tmp"
+        
     self.mon = AirMonitor(self.sbinDir + "/airmon-ng")
     self.replay = AirReplay(self.sbinDir + "/aireplay-ng")
     self.odump = AirOutputDump(self.sbinDir + "/airodump-ng")

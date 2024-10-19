@@ -78,7 +78,7 @@ class WifiScanResult(object):
   def addWifiNetwork(self, network):
     for n in self.wifiNetworks:
       if (n.bssid == network.bssid):
-	return
+        return
     self.wifiNetworks.add(network)
   
   def clear(self):
@@ -98,10 +98,10 @@ class WifiScanner(object):
       return "None" + str(code)
     elif (code & ( \
       NM_802_11_AP_SEC_PAIR_WEP40 \
-	| NM_802_11_AP_SEC_PAIR_WEP104 \
-	  | NM_802_11_AP_SEC_GROUP_WEP40 \
-	    | NM_802_11_AP_SEC_GROUP_WEP104 \
-	      )) > 0:
+        | NM_802_11_AP_SEC_PAIR_WEP104 \
+          | NM_802_11_AP_SEC_GROUP_WEP40 \
+            | NM_802_11_AP_SEC_GROUP_WEP104 \
+              )) > 0:
       return "WEP"
     else:
       return "WPA"
@@ -118,9 +118,9 @@ class WifiScanner(object):
       
       devs = []
       for l in fb.splitlines():
-	dev = re.search('802.11', l)
-	if dev is not None:
-	  devs = devs + [l.split()[0]]
+        dev = re.search('802.11', l)
+        if dev is not None:
+          devs = devs + [l.split()[0]]
     except OSError as e:
       print "posixWifiScan error. ", e
       return
@@ -135,43 +135,43 @@ class WifiScanner(object):
       interface = devs[0]
       
       try:
-	# Get MAC address
-	fb = subprocess.check_output(["ifconfig", interface])
-	
-	hwAddress = None
-	for l in fb.splitlines():
-	  res = re.search('ether', l)
-	  if res is not None:
-	    hwAddress = l.split()[1].upper()
-	    break
-	if hwAddress == None:
-	  raise OSError("Unable to find MAC address for device " + interface)
-	
-	# Put interface up
-	fb = subprocess.check_output(["ifconfig", interface, "up"])
-	
-	# Scan!
-	fb = subprocess.check_output(["iwlist", interface, "scanning"])
+        # Get MAC address
+        fb = subprocess.check_output(["ifconfig", interface])
+        
+        hwAddress = None
+        for l in fb.splitlines():
+          res = re.search('ether', l)
+          if res is not None:
+            hwAddress = l.split()[1].upper()
+            break
+        if hwAddress == None:
+          raise OSError("Unable to find MAC address for device " + interface)
+        
+        # Put interface up
+        fb = subprocess.check_output(["ifconfig", interface, "up"])
+        
+        # Scan!
+        fb = subprocess.check_output(["iwlist", interface, "scanning"])
       except OSError as e:
-	print "posixWifiScan scan error. ", e
-	return
+        print "posixWifiScan scan error. ", e
+        return
       except subprocess.CalledProcessError as e:
-	print "posixWifiScan scan issue. ", e
-	return
-	
+        print "posixWifiScan scan issue. ", e
+        return
+        
       wifiScanResult = WifiScanResult()
       wifiScanResult.setDevice(interface)
       wifiScanResult.setHwAddress(hwAddress)
       
       # Read information from cells and add network
       for cell in iw_parse.get_parsed_cells(fb):
-	wnet = WifiNetwork()
-	wnet.setSSID(cell["Name"])
-	wnet.setBSSID(cell["Address"])
-	wnet.setSecurity(cell["Encryption"])
-	wnet.setChannel(cell["Channel"])
-	wnet.setDiscoveredBy(wifiScanResult.hwAddress)
-	wifiScanResult.addWifiNetwork(wnet)
+        wnet = WifiNetwork()
+        wnet.setSSID(cell["Name"])
+        wnet.setBSSID(cell["Address"])
+        wnet.setSecurity(cell["Encryption"])
+        wnet.setChannel(cell["Channel"])
+        wnet.setDiscoveredBy(wifiScanResult.hwAddress)
+        wifiScanResult.addWifiNetwork(wnet)
       
       self.scanResults.add(wifiScanResult)
 
@@ -183,9 +183,9 @@ class WifiScanner(object):
     # Get network devices
     devices = dbus.Interface( \
       dbus.SystemBus().get_object( \
-	"org.freedesktop.NetworkManager", \
-	  "/org/freedesktop/NetworkManager"), \
-	"org.freedesktop.NetworkManager").GetDevices()
+        "org.freedesktop.NetworkManager", \
+          "/org/freedesktop/NetworkManager"), \
+        "org.freedesktop.NetworkManager").GetDevices()
     for d in devices:
       deviceProxy = dbus.SystemBus().get_object("org.freedesktop.NetworkManager", d)
       interfaceProperties = dbus.Interface(deviceProxy, "org.freedesktop.DBus.Properties")
@@ -197,34 +197,34 @@ class WifiScanner(object):
 
       # Make sure the device is enabled before we try to use it
       if (state != NM_DEVICE_STATE_DISCONNECTED) and (state != NM_DEVICE_STATE_ACTIVATED):
-	continue
+        continue
 
       # Scan
       if dtype == NM_DEVICE_TYPE_WIFI:   # WiFi
-	wifiScanResult = WifiScanResult()
-	wifiScanResult.setDevice(interface)
-	wifiScanResult.setHwAddress(str(interfaceProperties.Get("org.freedesktop.NetworkManager.Device.Wireless", "HwAddress")))
-	
-	# Get all APs the card can see
-	aps = dbus.Interface(deviceProxy, "org.freedesktop.NetworkManager.Device.Wireless").GetAccessPoints()
-	for path in aps:
-	  #ap_proxy =
-	  apProperties = dbus.Interface( \
-	    dbus.SystemBus().get_object("org.freedesktop.NetworkManager", path), \
-	      "org.freedesktop.DBus.Properties")
-	  bssid = apProperties.Get("org.freedesktop.NetworkManager.AccessPoint", "HwAddress")
-	  ssid = apProperties.Get("org.freedesktop.NetworkManager.AccessPoint", "Ssid")
-	  sec = apProperties.Get("org.freedesktop.NetworkManager.AccessPoint", "WpaFlags")
+        wifiScanResult = WifiScanResult()
+        wifiScanResult.setDevice(interface)
+        wifiScanResult.setHwAddress(str(interfaceProperties.Get("org.freedesktop.NetworkManager.Device.Wireless", "HwAddress")))
+        
+        # Get all APs the card can see
+        aps = dbus.Interface(deviceProxy, "org.freedesktop.NetworkManager.Device.Wireless").GetAccessPoints()
+        for path in aps:
+          #ap_proxy =
+          apProperties = dbus.Interface( \
+            dbus.SystemBus().get_object("org.freedesktop.NetworkManager", path), \
+              "org.freedesktop.DBus.Properties")
+          bssid = apProperties.Get("org.freedesktop.NetworkManager.AccessPoint", "HwAddress")
+          ssid = apProperties.Get("org.freedesktop.NetworkManager.AccessPoint", "Ssid")
+          sec = apProperties.Get("org.freedesktop.NetworkManager.AccessPoint", "WpaFlags")
 
-	  # Add network
-	  wnet = WifiNetwork()
-	  wnet.setSSID(self.ssid2str(ssid))
-	  wnet.setBSSID(str(bssid))
-	  wnet.setSecurity(self.securityCode2str(sec))
-	  wnet.setDiscoveredBy(wifiScanResult.hwAddress)
-	  wifiScanResult.addWifiNetwork(wnet)
-	
-	self.scanResults.add(wifiScanResult)
+          # Add network
+          wnet = WifiNetwork()
+          wnet.setSSID(self.ssid2str(ssid))
+          wnet.setBSSID(str(bssid))
+          wnet.setSecurity(self.securityCode2str(sec))
+          wnet.setDiscoveredBy(wifiScanResult.hwAddress)
+          wifiScanResult.addWifiNetwork(wnet)
+        
+        self.scanResults.add(wifiScanResult)
 
   # Cross platform scanner
   def scan(self):
@@ -238,17 +238,17 @@ class WifiScanner(object):
   def shellPrint(self):
     if (len(self.scanResults) > 0):
       for dev in self.scanResults:
-	print "Access points for device", dev.device, "(" + dev.hwAddress + "):"
-	for ap in dev.wifiNetworks:
-	  print "\t" + ap.ssid,"(" + ap.bssid + " - " + ap.channel + ") - " + ap.security
+        print "Access points for device", dev.device, "(" + dev.hwAddress + "):"
+        for ap in dev.wifiNetworks:
+          print "\t" + ap.ssid,"(" + ap.bssid + " - " + ap.channel + ") - " + ap.security
     else:
       print "No access points found or wireless devices missing.\n"
-	
+        
   def getWifiNetworkBySSID(self, name):
     for dev in self.scanResults:
       for ap in dev.wifiNetworks:
-	if (ap.ssid == name):
-	  return ap
+        if (ap.ssid == name):
+          return ap
     return None
   
 # Run the application
