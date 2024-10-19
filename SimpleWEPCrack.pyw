@@ -7,8 +7,8 @@
 
 # Imports
 from threading import Thread
-import sys, os, time, re, PyQt4
-from PyQt4 import QtCore, QtGui, QtNetwork
+import sys, os, time, re, PyQt6
+from PyQt6 import QtCore, QtGui, QtNetwork, QtWidgets
 from AboutBox_rc import *
 from Ui_AboutBox import Ui_AboutBox
 from WifiScanner import WifiScanner
@@ -22,7 +22,7 @@ gettext.textdomain("messages")
 
 def changeLanguage(lang):
   lang = gettext.translation('messages', localedir = 'lang', languages = [lang], fallback = True)
-  _ = lang.ugettext
+  _ = lang.gettext
   lang.install()
 
 def isDirectoryEmpty(checkDir):
@@ -34,7 +34,7 @@ def printNow(string):
   print(string, flush=True)
 
 # Simple WEP Crack
-class SimpleWEPCrack (QtGui.QApplication):
+class SimpleWEPCrack (QtWidgets.QApplication):
   aboutBox = None
   messageBox = None
   systemTrayIcon = None
@@ -73,7 +73,7 @@ class SimpleWEPCrack (QtGui.QApplication):
     self.enoughPrivileges()
     
     # Parent widget
-    self.widget = QtGui.QWidget()
+    self.widget = QtWidgets.QWidget()
     self.applyCommonWidgetProperties(self.widget)
     
     # Wifi stuff
@@ -146,11 +146,11 @@ class SimpleWEPCrack (QtGui.QApplication):
     widget.setWindowIcon(self.icon)
     widget.setWindowTitle("Simple WEP Crack")
         
-  def showModalText(self, text, modal = True, buttons = QtGui.QMessageBox.Close):
+  def showModalText(self, text, modal = True, buttons = QtWidgets.QMessageBox.close):
     if not self.autoMode:
-      messageBox = QtGui.QMessageBox()
+      messageBox = QtWidgets.QMessageBox()
       self.applyCommonWidgetProperties(messageBox)
-      messageBox.setIcon(QtGui.QMessageBox.Information)
+      messageBox.setIcon(QtWidgets.QMessageBox.information)
       messageBox.setStandardButtons(buttons)
       messageBox.setText(text)
       messageBox.setModal(modal)
@@ -160,12 +160,12 @@ class SimpleWEPCrack (QtGui.QApplication):
     try:
       os.open('/etc/foo', os.O_APPEND | os.O_CREAT)
     except OSError as e:
-      messageBox = QtGui.QMessageBox()
+      messageBox = QtWidgets.QMessageBox()
       self.applyCommonWidgetProperties(messageBox)
-      messageBox.setIcon(QtGui.QMessageBox.Critical)
-      messageBox.setStandardButtons(QtGui.QMessageBox.Close)
+      messageBox.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+      messageBox.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Close)
       messageBox.setText(_("Simple WEP Crack. Error. Insufficient privileges: restart this program from a user with more privileges (root/Administrator)"))
-      messageBox.exec_()
+      messageBox.exec()
       if exitNow:
         sys.exit(1)
       else:
@@ -219,8 +219,8 @@ class SimpleWEPCrack (QtGui.QApplication):
         procs = procs + [self.processes["replay"][k]]
 
     if len(procs) > 0:
-      reply = self.showModalText(_("Proceeding with closing, all currently active processes will be terminated. Would you want to quit program anyway?"), buttons = QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-      if reply == QtGui.QMessageBox.Yes:
+      reply = self.showModalText(_("Proceeding with closing, all currently active processes will be terminated. Would you want to quit program anyway?"), buttons = QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No)
+      if reply == QtWidgets.QMessageBox.StandardButton.Yes:
         #running = False
         #while running:
           #running = False
@@ -266,10 +266,10 @@ class SimpleWEPCrack (QtGui.QApplication):
         self.actions["wep"].setText(_("Find network..."))
         self.systemTrayIcon.setIcon(self.icon)
     else:
-      messageBox = QtGui.QMessageBox()
+      messageBox = QtWidgets.QMessageBox()
       self.applyCommonWidgetProperties(messageBox)
-      messageBox.setIcon(QtGui.QMessageBox.Information)
-      messageBox.setStandardButtons(QtGui.QMessageBox.Close)
+      messageBox.setIcon(QtWidgets.QMessageBox.Icon.Information)
+      messageBox.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Close)
       messageBox.setText(_("No WEP-protected network found. Try again."))
       messageBox.exec_()
       self.actions["wep"].setText(_("Find network..."))
@@ -277,12 +277,12 @@ class SimpleWEPCrack (QtGui.QApplication):
 
   def chooseAircrackBinDirs(self):
     self.systemTrayIcon.setIcon(self.iconBusy)
-    messageBox = QtGui.QMessageBox()
+    messageBox = QtWidgets.QMessageBox()
     self.applyCommonWidgetProperties(messageBox)
-    messageBox.setIcon(QtGui.QMessageBox.Information)
-    messageBox.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
+    messageBox.setIcon(QtWidgets.QMessageBox.Icon.Information)
+    messageBox.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No)
     messageBox.setText(_("aircrack-ng directories are currently:\n\n\t") + self.aircrack.binDir + "\n\t" + self.aircrack.sbinDir + _("\n\nDo you need to change them?"))
-    if (messageBox.exec_() == QtGui.QMessageBox.Yes):
+    if (messageBox.exec_() == QtWidgets.QMessageBox.StandardButton.Yes):
       bindir = QtGui.QFileDialog.getExistingDirectory(self.widget, _("Choose \"aircrack-ng\" directory"), self.aircrack.binDir, QtGui.QFileDialog.ShowDirsOnly | QtGui.QFileDialog.DontResolveSymlinks)
       if bindir:
         self.aircrack.setBinDir(bindir)

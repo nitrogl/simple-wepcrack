@@ -4,15 +4,15 @@
 # Copyright (C) 2014 Roberto Metere
 #
 # GUI Qt Process which implements Aircrack.Process
-import re, PyQt4
+import re, PyQt6
 import Aircrack
 
-from PyQt4 import QtGui, QtCore
+from PyQt6 import QtWidgets, QtCore
 from abc import ABCMeta
 
-class MetaAircrackGuiProcess(type(QtGui.QWidget), ABCMeta): pass
+class MetaAircrackGuiProcess(type(QtWidgets.QWidget), ABCMeta): pass
 
-class AbstractAircrackGuiProcess(QtGui.QWidget, Aircrack.Process):
+class AbstractAircrackGuiProcess(QtWidgets.QWidget, Aircrack.Process):
   __metaclass__ = MetaAircrackGuiProcess
   pass
 
@@ -32,13 +32,13 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
   stopLine = None
   
   def __init__(self, parent = None, title = "Aircrack GUI Process", icon = None):
-    super(QtGui.QWidget, self).__init__(None)
+    super(QtWidgets.QWidget, self).__init__(None)
     self.setWindowIcon(icon)
     self.setWindowTitle(title)
     self.process = QtCore.QProcess(parent)
-    self.layout = QtGui.QVBoxLayout()
-    self.cmdLabel = QtGui.QLabel()
-    self.output = QtGui.QTextEdit()
+    self.layout = QtWidgets.QVBoxLayout()
+    self.cmdLabel = QtWidgets.QLabel()
+    self.output = QtWidgets.QTextEdit()
     self.output.setReadOnly(True)
     
     self.layout.addWidget(self.cmdLabel)
@@ -50,14 +50,14 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
     self.process.readyReadStandardOutput.connect(self.stdoutReady)
   
   def closeEvent(self, event):
-    messageBox = QtGui.QMessageBox()
-    messageBox.setIcon(QtGui.QMessageBox.Information)
-    messageBox.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No )
+    messageBox = QtWidgets.QMessageBox()
+    messageBox.setIcon(QtWidgets.QMessageBox.Information)
+    messageBox.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No )
     messageBox.setText("Terminate process?")
     messageBox.setModal(True)
     
     reply = messageBox.exec_()
-    if reply == QtGui.QMessageBox.Yes:
+    if reply == QtWidgets.QMessageBox.Yes:
       self.stop()
     event.ignore()
   
