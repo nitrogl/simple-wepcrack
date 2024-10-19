@@ -146,7 +146,7 @@ class SimpleWEPCrack (QtGui.QApplication):
   def applyCommonWidgetProperties(self, widget):
     widget.setWindowIcon(self.icon)
     widget.setWindowTitle("Simple WEP Crack")
-	
+        
   def showModalText(self, text, modal = True, buttons = QtGui.QMessageBox.Close):
     if not self.autoMode:
       messageBox = QtGui.QMessageBox()
@@ -168,9 +168,9 @@ class SimpleWEPCrack (QtGui.QApplication):
       messageBox.setText(_("Simple WEP Crack. Error. Insufficient privileges: restart this program from a user with more privileges (root/Administrator)"))
       messageBox.exec_()
       if exitNow:
-	sys.exit(1)
+        sys.exit(1)
       else:
-	return False
+        return False
     else:
       os.remove('/etc/foo')
     return True
@@ -178,7 +178,7 @@ class SimpleWEPCrack (QtGui.QApplication):
   def closeEvent(self, event):
     for k in self.processes:
       if self.processes[k] is not None:
-	self.processes[k].stop()
+        self.processes[k].stop()
     self.animateIcon(None, False)
 
   def setStatusNoNetStatus(self):
@@ -214,22 +214,22 @@ class SimpleWEPCrack (QtGui.QApplication):
     procs = []
     for k in ["dump", "crack"]:
       if self.processes[k] is not None and self.processes[k].process.state() != QtCore.QProcess.NotRunning:
-	procs = procs + [self.processes[k]]
+        procs = procs + [self.processes[k]]
     for k in self.processes["replay"]:
       if self.processes["replay"][k] is not None and self.processes["replay"][k].process.state() != QtCore.QProcess.NotRunning:
-	procs = procs + [self.processes["replay"][k]]
+        procs = procs + [self.processes["replay"][k]]
 
     if len(procs) > 0:
       reply = self.showModalText(_("Proceeding with closing, all currently active processes will be terminated. Would you want to quit program anyway?"), buttons = QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
       if reply == QtGui.QMessageBox.Yes:
-	#running = False
-	#while running:
-	  #running = False
-	  #for p in procs:
-	    #if p.process.state() != QtCore.QProcess.NotRunning:
-	      #running = True
-	      #p.stop()
-	self.quit()
+        #running = False
+        #while running:
+          #running = False
+          #for p in procs:
+            #if p.process.state() != QtCore.QProcess.NotRunning:
+              #running = True
+              #p.stop()
+        self.quit()
     else:
       self.quit()
 
@@ -249,23 +249,23 @@ class SimpleWEPCrack (QtGui.QApplication):
     items = []
     for dev in self.wifiScanner.scanResults:
       for ap in dev.wifiNetworks:
-	if ap.security == "WEP":
-	  items = items + [ ap.ssid ]
+        if ap.security == "WEP":
+          items = items + [ ap.ssid ]
     
     if len(items) > 0:
       dialog = QtGui.QInputDialog()
       self.applyCommonWidgetProperties(dialog)
       item, ok = dialog.getItem(self.widget, _("Choose a WEP network"), _("WEP networks found: "), items, 0, False)
       if ok and item:
-	self.currentNetwork = self.wifiScanner.getWifiNetworkBySSID(item)
-	self.actions["wep"].setText(_("Network: ") + self.currentNetwork.ssid)
-	if len(self.monitorDevices) == 0:
-	  self.setStatusNoMonStatus()
-	else:
-	  self.setStatusOperative()
+        self.currentNetwork = self.wifiScanner.getWifiNetworkBySSID(item)
+        self.actions["wep"].setText(_("Network: ") + self.currentNetwork.ssid)
+        if len(self.monitorDevices) == 0:
+          self.setStatusNoMonStatus()
+        else:
+          self.setStatusOperative()
       else:
-	self.actions["wep"].setText(_("Find network..."))
-	self.systemTrayIcon.setIcon(self.icon)
+        self.actions["wep"].setText(_("Find network..."))
+        self.systemTrayIcon.setIcon(self.icon)
     else:
       messageBox = QtGui.QMessageBox()
       self.applyCommonWidgetProperties(messageBox)
@@ -286,27 +286,27 @@ class SimpleWEPCrack (QtGui.QApplication):
     if (messageBox.exec_() == QtGui.QMessageBox.Yes):
       bindir = QtGui.QFileDialog.getExistingDirectory(self.widget, _("Choose \"aircrack-ng\" directory"), self.aircrack.binDir, QtGui.QFileDialog.ShowDirsOnly | QtGui.QFileDialog.DontResolveSymlinks)
       if bindir:
-	self.aircrack.setBinDir(bindir)
+        self.aircrack.setBinDir(bindir)
       
       sbindir = QtGui.QFileDialog.getExistingDirectory(self.widget, _("Choose \"airmon-ng\", \"airodump-ng\" and \"aireplay-ng\" directory"), self.aircrack.sbinDir, QtGui.QFileDialog.ShowDirsOnly | QtGui.QFileDialog.DontResolveSymlinks)
       if sbindir:
-	self.aircrack.setSbinDir(sbindir)
+        self.aircrack.setSbinDir(sbindir)
 
   def chooseMonitor(self):
     if (self.autoMode):
       if len(self.monitorDevices) > 0:
-	return self.monitorDevices[0]
+        return self.monitorDevices[0]
       else:
-	return None
+        return None
     
     if len(self.monitorDevices) > 1:
       dialog = QtGui.QInputDialog()
       self.applyCommonWidgetProperties(dialog)
       item, ok = dialog.getItem(self.widget, _("Choose a monitor device"), _("Available monitors: "), self.monitorDevices, 0, False)
       if not ok or not item:
-	return None
+        return None
       else:
-	return item
+        return item
     elif len(self.monitorDevices) == 1:
       return self.monitorDevices[0]
     else:
@@ -321,7 +321,7 @@ class SimpleWEPCrack (QtGui.QApplication):
     for res in self.wifiScanner.scanResults:
       self.monitorDevices = self.aircrack.mon.start(res.device, self.currentNetwork.channel)
       if len(self.monitorDevices) > 0:
-	self.showModalText(_("Monitor devices found/created:\n") + "\n".join(self.monitorDevices))
+        self.showModalText(_("Monitor devices found/created:\n") + "\n".join(self.monitorDevices))
       self.setStatusOperative()
 
   def testMonitor(self):
@@ -343,9 +343,9 @@ class SimpleWEPCrack (QtGui.QApplication):
     monNotDeleted = []
     for mon in self.monitorDevices:
       if self.aircrack.mon.stop(mon):
-	monDeleted = monDeleted + [mon]
+        monDeleted = monDeleted + [mon]
       else:
-	monNotDeleted = monNotDeleted + [mon]
+        monNotDeleted = monNotDeleted + [mon]
     msg = ""
     if len(monDeleted) + len(monNotDeleted) == 0:
       msg = _("No monitor detected")
@@ -409,10 +409,10 @@ class SimpleWEPCrack (QtGui.QApplication):
       printNow (_("Autocrack. Starting monitor network..."))
       mon = self.startMonitor()
       if len(self.monitorDevices) == 0:
-	printNow (_(" error. Autocrack has stopped.") + "\n")
-	self.autoMode = False
-	self.showModalText(_("Automatic WEP crack stopped. Unable to start a monitor device"))
-	return
+        printNow (_(" error. Autocrack has stopped.") + "\n")
+        self.autoMode = False
+        self.showModalText(_("Automatic WEP crack stopped. Unable to start a monitor device"))
+        return
       printNow (_("done.") + "\n")
     printNow (_("Autocrack. Testing monitor..."))
     if not self.testMonitor():
