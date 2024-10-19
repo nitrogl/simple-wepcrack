@@ -35,7 +35,7 @@ class AirMonitor(object):
     self.setBinary(binary)
 
   def isRunAsRoot(self, output):
-    return ("root" not in output)
+    return ("root" not in output.decode('utf-8'))
 
   def setBinary(self, binary):
     self.binary = binary
@@ -82,7 +82,7 @@ class AirMonitor(object):
         # Get the monitor interface(s)
         mons = []
         for l in fb.splitlines():
-          mon = re.search('mon[0-9]', l)
+          mon = re.search(r'mon[0-9]', l.decode('utf-8'))
           if mon is not None:
             mons = mons + [mon.group(0)]
         return mons
@@ -322,8 +322,8 @@ class AircrackNG(object):
   def __init__ (self):
     if (os.name == "posix"):
       try:
-        self.binDir = "/".join(subprocess.check_output(["which", "aircrack-ng"]).split("/")[:-1])
-        self.sbinDir = "/".join(subprocess.check_output(["which", "airmon-ng"]).split("/")[:-1])
+        self.binDir = "/".join(subprocess.check_output(["which", "aircrack-ng"]).decode('utf-8').split("/")[:-1])
+        self.sbinDir = "/".join(subprocess.check_output(["which", "airmon-ng"]).decode('utf-8').split("/")[:-1])
         self.workDir = "/tmp/swc"
         if not os.path.exists(self.workDir):
           os.makedirs(self.workDir)

@@ -83,15 +83,15 @@ class SimpleWEPCrack (QtWidgets.QApplication):
     self.monitorDevices = self.aircrack.mon.detect()
     
     # Initialize about box
-    self.aboutBox = QtGui.QDialog()
+    self.aboutBox = QtWidgets.QDialog()
     Ui_AboutBox().setupUi(self.aboutBox)
     
     # Tray icon
-    self.systemTrayIcon = QtGui.QSystemTrayIcon()
+    self.systemTrayIcon = QtWidgets.QSystemTrayIcon()
     self.systemTrayIcon.setIcon(self.icon)
     
     # Tray menu
-    self.trayMenu = QtGui.QMenu()
+    self.trayMenu = QtWidgets.QMenu()
     self.actions["wep"] = self.trayMenu.addAction(_("Find network..."), self.chooseNetwork)
     self.actions["autocrack"] = self.trayMenu.addAction(_("Auto-crack..."), self.crackNetwork)
     self.actions["dir"] = self.trayMenu.addAction(_("Aircrack directory..."), self.chooseAircrackBinDirs)
@@ -106,7 +106,7 @@ class SimpleWEPCrack (QtWidgets.QApplication):
     self.actions["arpinj"] = self.trayMenu.addAction(_("ARP Replay"), self.arpReplay)
     self.actions["crack"] = self.trayMenu.addAction(_("Crack!!"), self.crackPassword)
     self.trayMenu.addSeparator()
-    self.actions["about"] = self.trayMenu.addAction(_("Credits"), self.aboutBox.exec_)
+    self.actions["about"] = self.trayMenu.addAction(_("Credits"), self.aboutBox.exec)
     self.actions["exit"] = self.trayMenu.addAction(_("Exit"), self.quitProgram)
     self.setStatusNoNetStatus()
     
@@ -445,7 +445,7 @@ class SimpleWEPCrack (QtWidgets.QApplication):
 def main():
   changeLanguage('it_IT')
   app = SimpleWEPCrack( sys.argv )
-  sys.exit(app.exec_())
+  sys.exit(app.exec())
 
 if __name__ == '__main__':
     main()
