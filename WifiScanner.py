@@ -6,7 +6,6 @@
 # Wifi scanner module
 
 import sys, os, re
-from sets import Set
 from WifiNetwork import WifiNetwork
 
 # Platform dependent loading modules
@@ -64,7 +63,7 @@ if (os.name == "posix"):
 class WifiScanResult(object):
   device = "lo"
   hwAddress = "00:00:00:00:00:00"
-  wifiNetworks = Set()
+  wifiNetworks = set()
   
   def __init__(self):
     return
@@ -82,10 +81,10 @@ class WifiScanResult(object):
     self.wifiNetworks.add(network)
   
   def clear(self):
-    self.wifiNetworks = Set()
+    self.wifiNetworks = set()
 
 class WifiScanner(object):
-  scanResults = Set()
+  scanResults = set()
 
   def ssid2str(self, dbusByteArray):
     ssid = ""
@@ -110,7 +109,7 @@ class WifiScanner(object):
   def posixWifiScan(self):
 
     # Result
-    self.scanResults = Set()
+    self.scanResults = set()
 
     # Get all wireless devices
     try:
@@ -122,10 +121,10 @@ class WifiScanner(object):
         if dev is not None:
           devs = devs + [l.split()[0]]
     except OSError as e:
-      print "posixWifiScan error. ", e
+      print("posixWifiScan error. ", e)
       return
     except subprocess.CalledProcessError as e:
-      print "posixWifiScan issue. ", e
+      print("posixWifiScan issue. ", e)
       return
     
     # Device scan
@@ -153,10 +152,10 @@ class WifiScanner(object):
         # Scan!
         fb = subprocess.check_output(["iwlist", interface, "scanning"])
       except OSError as e:
-        print "posixWifiScan scan error. ", e
+        print("posixWifiScan scan error. ", e)
         return
       except subprocess.CalledProcessError as e:
-        print "posixWifiScan scan issue. ", e
+        print("posixWifiScan scan issue. ", e)
         return
         
       wifiScanResult = WifiScanResult()
@@ -178,7 +177,7 @@ class WifiScanner(object):
   # Wifi scanner for linux systems with NetworkManager active
   def posixWifiScanNetworkManager(self):
     # Result
-    self.scanResults = Set()
+    self.scanResults = set()
 
     # Get network devices
     devices = dbus.Interface( \
@@ -232,17 +231,17 @@ class WifiScanner(object):
     try:
       scanners[os.name]()
     except KeyError:
-      print >>sys.stderr, "Error. Operating system not supported."
+      print("Error. Operating system not supported.", file=sys.stderr)
       sys.exit(2)
 
   def shellPrint(self):
     if (len(self.scanResults) > 0):
       for dev in self.scanResults:
-        print "Access points for device", dev.device, "(" + dev.hwAddress + "):"
+        print("Access points for device", dev.device, "(" + dev.hwAddress + "):")
         for ap in dev.wifiNetworks:
-          print "\t" + ap.ssid,"(" + ap.bssid + " - " + ap.channel + ") - " + ap.security
+          print("\t" + ap.ssid,"(" + ap.bssid + " - " + ap.channel + ") - " + ap.security)
     else:
-      print "No access points found or wireless devices missing.\n"
+      print("No access points found or wireless devices missing.\n")
         
   def getWifiNetworkBySSID(self, name):
     for dev in self.scanResults:

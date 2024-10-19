@@ -88,9 +88,9 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
             if l.startswith(self.stopTrigger):
               self.stopLine = l
           if self.stopLine is None:
-            print _("We got a big error here!")
+            print(_("We got a big error here!"))
           else:
-            print self.stopLine
+            print(self.stopLine)
             self.stop()
             self.stopCallback()
       

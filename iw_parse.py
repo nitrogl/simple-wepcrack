@@ -147,8 +147,8 @@ def print_table(table):
 
     for line in justified_table:
         for el in line:
-            print el,
-        print
+            print(el)
+        print("\n")
 
 def print_cells(cells, columns):
     table = [columns]

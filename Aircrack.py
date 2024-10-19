@@ -52,7 +52,7 @@ class AirMonitor(object):
       if not self.isRunAsRoot(fb):
         raise OSError(fb.strip())
     except OSError as e:
-      print "AirMonitor stop error. ", e
+      print("AirMonitor stop error. ", e)
     return fb.strip()
 
   def stop(self, interface):
@@ -70,7 +70,7 @@ class AirMonitor(object):
       else:
         raise OSError(fb.strip())
     except OSError as e:
-      print "AirMonitor stop error. ", e
+      print("AirMonitor stop error. ", e)
       return False
 
   def detect(self):
@@ -88,9 +88,9 @@ class AirMonitor(object):
         return mons
         raise OSError(fb.strip())
     except OSError as e:
-      print "AirMonitor detect error. ", e
+      print("AirMonitor detect error. ", e)
     except subprocess.CalledProcessError as e:
-      print "AirMonitor detect issue. ", e
+      print("AirMonitor detect issue. ", e)
     return []
 
   def start(self, interface, channel = None):
@@ -122,9 +122,9 @@ class AirMonitor(object):
       else:
         raise OSError(fb.strip())
     except OSError as e:
-      print "AirMonitor start error. ", e
+      print("AirMonitor start error. ", e)
     except subprocess.CalledProcessError as e:
-      print "AirMonitor start issue. ", e
+      print("AirMonitor start issue. ", e)
     return []
 
 # Inject packets into a wireless network to generate traffic
@@ -154,9 +154,9 @@ class AirReplay(object):
       else:
         raise OSError(fb.strip())
     except OSError as e:
-      print "AirReplay testInjection failure. ", e
+      print("AirReplay testInjection failure. ", e)
     except subprocess.CalledProcessError as e:
-      print "AirReplay testInjection error. ", e
+      print("AirReplay testInjection error. ", e)
     return False
 
   # aireplay-ng -1 6000 -o 1 -q 10 -e teddy -a 00:14:6C:7E:40:80 -h 00:0F:B5:88:AC:82 ath0
@@ -176,12 +176,11 @@ class AirReplay(object):
             if not self.isRunAsRoot(fb):
               self.proc.terminate()
               raise OSError(line.strip())
-            print line.strip()
-            sys.stdout.flush()
+            print(line.strip(), flush=True)
     except OSError as e:
-      print "AirReplay fakeAuthentication failure. ", e
+      print("AirReplay fakeAuthentication failure. ", e)
     except subprocess.CalledProcessError as e:
-      print "AirReplay fakeAuthentication error. ", e
+      print("AirReplay fakeAuthentication error. ", e)
 
   # aireplay-ng -3 -b 00:14:6C:7E:40:80 -h 00:0F:B5:88:AC:82 ath0
   def arpInjection(self, network, interface, reauthenticateDelay = 300, packets = 1, keepAlive = 10, process = None):
@@ -200,12 +199,11 @@ class AirReplay(object):
             if not self.isRunAsRoot(fb):
               self.proc.terminate()
               raise OSError(line.strip())
-            print line.strip()
-            sys.stdout.flush()
+            print(line.strip(), flush=True)
     except OSError as e:
-      print "AirReplay fakeAuthentication failure. ", e
+      print("AirReplay fakeAuthentication failure. ", e)
     except subprocess.CalledProcessError as e:
-      print "AirReplay fakeAuthentication error. ", e
+      print("AirReplay fakeAuthentication error. ", e)
 
 # A wireless packet capture tool for aircrack-ng
 class AirOutputDump(object):
@@ -231,7 +229,7 @@ class AirOutputDump(object):
       try:
         os.makedirs(dumpDir)
       except OSError as e:
-        print "AirOutputDump dump error. ", e
+        print("AirOutputDump dump error. ", e)
         return
     
     # Command
@@ -250,12 +248,11 @@ class AirOutputDump(object):
             if not self.isRunAsRoot(fb):
               self.proc.terminate()
               raise OSError(line.strip())
-            print line.strip()
-            sys.stdout.flush()
+            print(line.strip(), flush=True)
     except OSError as e:
-      print "AirOutputDump dump failure. ", e
+      print("AirOutputDump dump failure. ", e)
     except subprocess.CalledProcessError as e:
-      print "AirOutputDump dump error. ", e
+      print("AirOutputDump dump error. ", e)
 
 
 
@@ -277,7 +274,7 @@ class AirCrack(object):
       
       if crackDir is not None:
         if not os.path.exists(crackDir) or os.path.isfile(crackDir):
-          print "AirCrack crack error. Unable to find dump directory."
+          print("AirCrack crack error. Unable to find dump directory.")
           return 2
         else:
           while os.listdir(crackDir) == 0:
@@ -293,8 +290,7 @@ class AirCrack(object):
         while self.proc.poll() is None:
           line = self.proc.stderr.readline()
           if line is not None:
-            print line.strip()
-            sys.stdout.flush()
+            print(line.strip(), flush=True)
       return 0 # Were running
     else:
       return 1 # Error
@@ -374,8 +370,8 @@ def test():
     network = WifiNetwork()
     network.setSSID("Alice-92313723")
     network.setBSSID("00:1C:A2:D1:55:FC")
-    print aircrack.replay.testInjection(network, mons[0])
-    print aircrack.odump.dump(network, mons[0])
+    print(aircrack.replay.testInjection(network, mons[0]))
+    print(aircrack.odump.dump(network, mons[0]))
 
   #Stop monitors
   for mon in mons:
