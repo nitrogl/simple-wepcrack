@@ -76,8 +76,8 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
       outString = data
     if outString is not None:
       # Remove "noise"
-      outString = re.sub('\[([0-9]+;[0-9]+)*H', '', outString)
-      outString = re.sub('\[[0-9]*[JKC]', '\n', outString)
+      outString = re.sub(r'\[([0-9]+;[0-9]+)*H', '', outString)
+      outString = re.sub(r'\[[0-9]*[JKC]', '\n', outString)
       
       # Stop Trigger?
       if self.stopTrigger is not None:
