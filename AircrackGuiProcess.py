@@ -56,7 +56,7 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
     messageBox.setText("Terminate process?")
     messageBox.setModal(True)
     
-    reply = messageBox.exec_()
+    reply = messageBox.exec()
     if reply == QtWidgets.QMessageBox.Yes:
       self.stop()
     event.ignore()

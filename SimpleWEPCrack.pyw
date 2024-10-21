@@ -154,7 +154,7 @@ class SimpleWEPCrack (QtWidgets.QApplication):
       messageBox.setStandardButtons(buttons)
       messageBox.setText(text)
       messageBox.setModal(modal)
-      return messageBox.exec_()
+      return messageBox.exec()
 
   def enoughPrivileges(self, exitNow = True):
     try:
@@ -271,7 +271,7 @@ class SimpleWEPCrack (QtWidgets.QApplication):
       messageBox.setIcon(QtWidgets.QMessageBox.Icon.Information)
       messageBox.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Close)
       messageBox.setText(_("No WEP-protected network found. Try again."))
-      messageBox.exec_()
+      messageBox.exec()
       self.actions["wep"].setText(_("Find network..."))
       self.systemTrayIcon.setIcon(self.icon)
 
@@ -282,7 +282,7 @@ class SimpleWEPCrack (QtWidgets.QApplication):
     messageBox.setIcon(QtWidgets.QMessageBox.Icon.Information)
     messageBox.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No)
     messageBox.setText(_("aircrack-ng directories are currently:\n\n\t") + self.aircrack.binDir + "\n\t" + self.aircrack.sbinDir + _("\n\nDo you need to change them?"))
-    if (messageBox.exec_() == QtWidgets.QMessageBox.StandardButton.Yes):
+    if (messageBox.exec() == QtWidgets.QMessageBox.StandardButton.Yes):
       bindir = QtGui.QFileDialog.getExistingDirectory(self.widget, _("Choose \"aircrack-ng\" directory"), self.aircrack.binDir, QtGui.QFileDialog.ShowDirsOnly | QtGui.QFileDialog.DontResolveSymlinks)
       if bindir:
         self.aircrack.setBinDir(bindir)
