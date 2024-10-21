@@ -67,7 +67,7 @@ def get_encryption(cell):
         for line in cell:
             matching = match(line,"IE:")
             if matching is not None:
-                wpa = re.search("WPA[2]*", matching.decode('utf-8'))
+                wpa = re.search("WPA[2]*", matching)
                 if wpa is not None:
                     enc = wpa.group(0)
         if enc == "":
@@ -91,7 +91,7 @@ def get_address(cell):
 def sort_cells(cells):
     sortby = "Quality"
     reverse = True
-    cells.sort(None, lambda el:el[sortby], reverse)
+    cells.sort(key=lambda el:el[sortby], reverse=reverse)
 
 
 # Below here goes the boring stuff. You shouldn't have to edit anything below
@@ -182,11 +182,12 @@ def get_parsed_cells(iw_data, rules=None):
     cells = [[]]
     parsed_cells = []
 
-    if type(iw_data) == type(""):
-      lines = iw_data.splitlines()
-    else:
-      lines = iw_data
+    # if type(iw_data) == type(""):
+    #   lines = iw_data.decode('utf-8').splitlines()
+    # else:
+    #   lines = iw_data
 
+    lines = iw_data.decode('utf-8').splitlines()
     for line in lines:
         cell_line = match(line, "Cell ")
         if cell_line != None:

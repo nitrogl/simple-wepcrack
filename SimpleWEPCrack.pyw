@@ -252,7 +252,7 @@ class SimpleWEPCrack (QtWidgets.QApplication):
           items = items + [ ap.ssid ]
     
     if len(items) > 0:
-      dialog = QtGui.QInputDialog()
+      dialog = QtWidgets.QInputDialog()
       self.applyCommonWidgetProperties(dialog)
       item, ok = dialog.getItem(self.widget, _("Choose a WEP network"), _("WEP networks found: "), items, 0, False)
       if ok and item:
