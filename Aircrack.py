@@ -110,7 +110,7 @@ class AirMonitor(object):
         # Get the monitor interface(s)
         mons = []
         for l in fb.splitlines():
-          mon = re.search('mon[0-9]', l)
+          mon = re.search('mon[0-9]', l.decode('utf-8'))
           if mon is not None:
             # Due to a bug, set the channel manually (where?)
             if channel is not None:

@@ -63,11 +63,11 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
   
   def dataReady(self, data = None):
     if self.beginTrigger is not None:
-      reg = re.search(self.beginTrigger, data)
+      reg = re.search(self.beginTrigger, data.decode('utf-8'))
       if reg is not None:
         outString = data[data.find(reg.group(0)):]
         if self.endTrigger is not None:
-          reg = re.search(self.endTrigger, outString)
+          reg = re.search(self.endTrigger, outString.decode('utf-8'))
           if reg is not None:
             outString = outString[:outString.rfind(reg.group(0))]
       else:
@@ -81,7 +81,7 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
       
       # Stop Trigger?
       if self.stopTrigger is not None:
-        reg = re.search(self.stopTrigger, outString)
+        reg = re.search(self.stopTrigger, outString.decode('utf-8'))
         if reg is not None:
           self.stopLine = None
           for l in outString.splitlines():
@@ -99,7 +99,7 @@ class AircrackGuiProcess(AbstractAircrackGuiProcess):
         rows = outString.splitlines()
         outRows = []
         for r in rows:
-          reg = re.search(self.lineFilterRegEx, r)
+          reg = re.search(self.lineFilterRegEx, r.decode('utf-8'))
           if reg is not None:
             outRows = outRows + [r]
         outString = "\n".join(outRows)

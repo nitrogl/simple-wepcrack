@@ -67,7 +67,7 @@ def get_encryption(cell):
         for line in cell:
             matching = match(line,"IE:")
             if matching is not None:
-                wpa = re.search("WPA[2]*", matching)
+                wpa = re.search("WPA[2]*", matching.decode('utf-8'))
                 if wpa is not None:
                     enc = wpa.group(0)
         if enc == "":

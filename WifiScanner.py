@@ -117,7 +117,7 @@ class WifiScanner(object):
       
       devs = []
       for l in fb.splitlines():
-        dev = re.search('802.11', l)
+        dev = re.search(r'802.11', l.decode('utf-8'))
         if dev is not None:
           devs = devs + [l.split()[0]]
     except OSError as e:
@@ -139,7 +139,7 @@ class WifiScanner(object):
         
         hwAddress = None
         for l in fb.splitlines():
-          res = re.search('ether', l)
+          res = re.search('ether', l.decode('utf-8'))
           if res is not None:
             hwAddress = l.split()[1].upper()
             break
